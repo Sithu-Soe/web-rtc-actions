@@ -17,8 +17,8 @@ var upgradeConnection = websocket.Upgrader{
 }
 
 var (
-	localIceCandidate  = ""
-	remoteIceCandidate = ""
+	localOffer         = SDPDescription{}
+	remoteIceCandidate = SDPDescription{}
 )
 
 type WSReadMessage struct {
@@ -53,7 +53,7 @@ func ServeWS(c *gin.Context) {
 				continue
 			}
 
-			log.Println(string(data))
+			// log.Println(string(data))
 
 			wsReadMsg := WSReadMessage{}
 			if err := json.Unmarshal(data, &wsReadMsg); err != nil {
@@ -61,17 +61,17 @@ func ServeWS(c *gin.Context) {
 				return
 			}
 
-			log.Println(wsReadMsg)
+			// log.Println(wsReadMsg)
 
-			// if wsReadMsg.MsgType == 1 {
-			// 	localIceCandidate = wsReadMsg.SDPDescription.
-			// }
+			if wsReadMsg.MsgType == 1 {
+				localOffer = wsReadMsg.SDPDescription
+			}
 
 			// if wsReadMsg.MsgType == 2 {
 			// 	remoteIceCandidate = wsReadMsg.IceCandidate
 			// }
 
-			// log.Println("LOCAL:", localIceCandidate, "REMOTE:", remoteIceCandidate)
+			// log.Println("LOCAL:", localOffer, "REMOTE:", remoteIceCandidate)
 
 		}
 	}()
