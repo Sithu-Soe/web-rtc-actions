@@ -22,8 +22,13 @@ var (
 )
 
 type WSReadMessage struct {
-	MsgType      int    `json:"msg_type"` // 1 for local addd, 2 for remote addd
-	IceCandidate string `json:"ice_candidate"`
+	MsgType        int `json:"msg_type"` // 1 for local addd, 2 for remote addd
+	SDPDescription `json:"sdp_description"`
+}
+
+type SDPDescription struct {
+	SDP  string `json:"sdp"`
+	Type string `json:"type"`
 }
 
 func ServeWS(c *gin.Context) {
@@ -48,21 +53,25 @@ func ServeWS(c *gin.Context) {
 				continue
 			}
 
+			log.Println(string(data))
+
 			wsReadMsg := WSReadMessage{}
 			if err := json.Unmarshal(data, &wsReadMsg); err != nil {
 				log.Println(err)
 				return
 			}
 
-			if wsReadMsg.MsgType == 1 {
-				localIceCandidate = wsReadMsg.IceCandidate
-			}
+			log.Println(wsReadMsg)
 
-			if wsReadMsg.MsgType == 2 {
-				remoteIceCandidate = wsReadMsg.IceCandidate
-			}
+			// if wsReadMsg.MsgType == 1 {
+			// 	localIceCandidate = wsReadMsg.SDPDescription.
+			// }
 
-			log.Println("LOCAL:", localIceCandidate, "REMOTE:", remoteIceCandidate)
+			// if wsReadMsg.MsgType == 2 {
+			// 	remoteIceCandidate = wsReadMsg.IceCandidate
+			// }
+
+			// log.Println("LOCAL:", localIceCandidate, "REMOTE:", remoteIceCandidate)
 
 		}
 	}()

@@ -51,13 +51,17 @@ webcamButton.onclick = async () => {
 callButton.onclick = async () => {
 
   iceCandidate = null
-  pc.onicecandidate = (e) => {
-    console.log(e.candidate, "HEHHE");
-    iceCandidate = e.candidate
-  }
-  offer = {
-    "msg_type": 1,
-    "ice_candidate": iceCandidate,
-  }
-  socket.send(offer)
+  pc.onicecandidate = (event) => {
+    if (event.candidate) {
+      console.log(event.candidate, "DHDS", event.candidate.toJSON);
+      iceCandidate = event.candidate
+    }
+  };
+
+  const offerDescription = await pc.createOffer();
+  await pc.setLocalDescription(offerDescription)
+
+  console.log(offerDescription, "offer description")
+
+  socket.send(offerDescription)
 }
