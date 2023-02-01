@@ -50,7 +50,7 @@ webcamButton.onclick = async () => {
 
 callButton.onclick = async () => {
 
-  iceCandidate = null
+  let iceCandidate = null
   pc.onicecandidate = (event) => {
     if (event.candidate) {
       console.log(event.candidate, "DHDS", event.candidate.toJSON);
