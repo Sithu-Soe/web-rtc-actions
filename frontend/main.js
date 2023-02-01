@@ -1,3 +1,5 @@
+import './style.css';
+
 const iceConfiguration = {
   iceServers: [
     {
@@ -31,4 +33,12 @@ webcamButton.onclick = async () => {
   localStream.getTracks().forEach((track) => {
     pc.addTrack(track, localStream)
   })
+
+  // remoteStream = new MediaStream()
+
+  webcamVideo.srcObject = localStream;
+
+  callButton.disabled = false;
+  answerButton.disabled = false;
+  webcamButton.disabled = true;
 }
