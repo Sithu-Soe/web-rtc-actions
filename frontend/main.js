@@ -15,6 +15,9 @@ const pc = new RTCPeerConnection(iceConfiguration);
 let localStream = null;
 let remoteStream = null;
 
+let socket = new WebSocket("ws://localhost:8083/ws");
+console.log("Attemtpting websocker connection...")
+
 //HTML elements
 const webcamButton = document.getElementById('webcamButton');
 const webcamVideo = document.getElementById('webcamVideo');
@@ -24,12 +27,14 @@ const answerButton = document.getElementById('answerButton');
 const remoteVideo = document.getElementById('remoteVideo');
 const hangupButton = document.getElementById('hangupButton');
 
+// 1. Setup media sources
 
 webcamButton.onclick = async () => {
   console.log("HEHE");
 
-  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true})
+  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 
+  // Push tracks from local stream to peer connection
   localStream.getTracks().forEach((track) => {
     pc.addTrack(track, localStream)
   })
@@ -41,4 +46,18 @@ webcamButton.onclick = async () => {
   callButton.disabled = false;
   answerButton.disabled = false;
   webcamButton.disabled = true;
+}
+
+callButton.onclick = async () => {
+
+  iceCandidate = null
+  pc.onicecandidate = (e) => {
+    console.log(e.candidate, "HEHHE");
+    iceCandidate = e.candidate
+  }
+  offer = {
+    "msg_type": 1,
+    "ice_candidate": iceCandidate,
+  }
+  socket.send(offer)
 }
